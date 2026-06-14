@@ -2,6 +2,8 @@
 
 VlogVerse is a full-featured vlogging platform built with Flask. It allows creators to sign up, write and publish vlogs, browse content from others, and manage their work through an intuitive dashboard. An admin panel provides oversight of users, vlogs, and contact form submissions.
 
+> This project now uses PostgreSQL instead of SQLite and is fully compatible with Neon PostgreSQL cloud databases.
+
 ---
 
 ## ✨ Features
@@ -25,7 +27,7 @@ VlogVerse is a full-featured vlogging platform built with Flask. It allows creat
 | ------------ | ------------------------------------------------------------------- |
 | **Backend**  | Python 3, Flask                                                     |
 | **ORM**      | Flask-SQLAlchemy                                                    |
-| **Database** | SQLite (`instance/database.db`)                                     |
+| **Database** | PostgreSQL (Neon PostgreSQL Supported) |                                    |
 | **Auth**     | Werkzeug (`generate_password_hash` / `check_password_hash`)         |
 | **Email**    | Flask-Mail via SMTP (Elastic Email)                                 |
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES6)                               |
@@ -41,10 +43,8 @@ VlogVerse is a full-featured vlogging platform built with Flask. It allows creat
 ```
 VlogVerse/
 ├── app.py                       # Flask application (routes, models, config)
-├── .env                         # Environment variables (MAIL settings, secret key)
+├── .env                         # Environment variables (MAIL settings, secret key,PostgreSQL URL)
 ├── requirements.txt             # Python dependencies
-├── instance/
-│   └── database.db              # SQLite database
 ├── static/
 │   ├── css/
 │   │   └── style.css            # All custom styles (glassmorphism, animations, responsive)
@@ -110,7 +110,7 @@ pip install -r requirements.txt
 Or install manually:
 
 ```bash
-pip install flask flask-sqlalchemy flask-mail werkzeug python-dotenv
+pip install flask flask-sqlalchemy flask-mail werkzeug python-dotenv psycopg2-binary
 ```
 
 ### 4. Configure Environment Variables
@@ -123,6 +123,7 @@ MAIL_USERNAME=your_email@example.com
 MAIL_PASSWORD=your_smtp_password
 MAIL_DEFAULT_SENDER=your_email@example.com
 FLASK_SECRET_KEY=your_secret_key_here
+DATABASE_URL=postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE?sslmode=require
 ```
 
 - `MAIL_SERVER`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_DEFAULT_SENDER` — SMTP credentials (Elastic Email or any SMTP provider).
@@ -138,7 +139,7 @@ The database tables are created automatically when the app starts:
 python app.py
 ```
 
-Tables (`users`, `vlogs`, `contact_message`) will be created inside `instance/database.db`.
+Tables (`users`, `vlogs`, `contact_message`) will be automatically created in your PostgreSQL database.
 
 ### 6. Run the Application
 
@@ -306,8 +307,19 @@ Landing Page (/) → Explore (/explore) or Trending (/trending)
 All configuration lives in `app.py`:
 
 ```python
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.secret_key = "mysecretkey"  # Override via .env or environment
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "mysecretkey")
 ```
 
 Email config is loaded from environment variables via `python-dotenv`:
@@ -335,12 +347,13 @@ flask-sqlalchemy
 flask-mail
 werkzeug
 python-dotenv
+psycopg2-binary
 ```
 
 Install with:
 
 ```bash
-pip install flask flask-sqlalchemy flask-mail werkzeug python-dotenv
+pip install flask flask-sqlalchemy flask-mail werkzeug python-dotenv psycopg2-binary
 ```
 
 ---
