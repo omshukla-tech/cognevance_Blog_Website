@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vlog.title }} - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="vlog-view-section">
+    <div class="vlog-view-container">
+        <a href="/dashboard" class="vlog-view-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <article class="vlog-view-card">
+            {% if vlog.cover_image_url %}
+            <div class="vlog-view-cover">
+                <img src="{{ vlog.cover_image_url }}" alt="{{ vlog.title }}" onerror="this.style.display='none'">
+            </div>
+            {% endif %}
+
+            <div class="vlog-view-header">
+                <div class="vlog-view-meta">
+                    <div class="vlog-view-author">
+                        <i class="fas fa-user-circle"></i>
+                        <span>{{ vlog.author.First_Name }} {{ vlog.author.Last_Name or '' }}</span>
+                    </div>
+                    <div class="vlog-view-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>{{ vlog.created_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    {% if vlog.updated_at != vlog.created_at %}
+                    <div class="vlog-view-edited">
+                        <i class="fas fa-pen"></i>
+                        <span>Edited {{ vlog.updated_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <h1 class="vlog-view-title">{{ vlog.title }}</h1>
+                <p class="vlog-view-description">{{ vlog.description }}</p>
+            </div>
+
+            <div class="vlog-view-content">
+                {{ vlog.content | safe }}
+            </div>
+
+            {% if vlog.author_id == user.serial_number %}
+            <div class="vlog-view-actions">
+                <a href="/vlog/{{ vlog.id }}/edit" class="btn btn-primary">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Vlog</span>
+                </a>
+                <form action="/vlog/{{ vlog.id }}/delete" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this vlog? This action cannot be undone.');">
+                    <button type="submit" class="btn btn-ghost btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Delete Vlog</span>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </article>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Vlog' if vlog else 'Create Vlog' }} - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="vlog-form-section">
+    <div class="vlog-form-container">
+        <a href="/dashboard" class="vlog-view-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="vlog-form-card">
+            <div class="vlog-form-header">
+                <div class="vlog-form-icon">
+                    <i class="fas {% if vlog %}fa-edit{% else %}fa-plus-circle{% endif %}"></i>
+                </div>
+                <h2>{{ 'Edit Your Vlog' if vlog else 'Create a New Vlog' }}</h2>
+                <p>{{ 'Update your vlog details below.' if vlog else 'Share your story with the world!' }}</p>
+            </div>
+
+            {% if error %}
+            <div class="error-message">⚠ {{ error }}</div>
+            {% endif %}
+
+            <form class="vlog-form" method="POST" action="{{ '/vlog/' ~ vlog.id ~ '/edit' if vlog else '/vlog/new' }}">
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="text" name="title" id="vlogTitle" class="form-input" value="{{ vlog.title if vlog else '' }}" required>
+                        <label for="vlogTitle" class="form-label">Vlog Title</label>
+                        <div class="input-highlight"></div>
+                        <i class="fas fa-heading input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="url" name="cover_image_url" id="vlogCover" class="form-input" value="{{ vlog.cover_image_url if vlog else '' }}" placeholder="https://example.com/image.jpg">
+                        <label for="vlogCover" class="form-label">Cover Image URL (optional)</label>
+                        <div class="input-highlight"></div>
+                        <i class="fas fa-image input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <textarea name="description" id="vlogDescription" class="form-input form-textarea" rows="3" required>{{ vlog.description if vlog else '' }}</textarea>
+                        <label for="vlogDescription" class="form-label">Short Description</label>
+                        <div class="input-highlight"></div>
+                        <i class="fas fa-align-left input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <textarea name="content" id="vlogContent" class="form-input form-textarea form-textarea-lg" rows="12" required>{{ vlog.content if vlog else '' }}</textarea>
+                        <label for="vlogContent" class="form-label">Vlog Content (HTML supported)</label>
+                        <div class="input-highlight"></div>
+                        <i class="fas fa-file-alt input-icon"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit">
+                    <i class="fas {% if vlog %}fa-save{% else %}fa-paper-plane{% endif %}"></i>
+                    <span>{{ 'Update Vlog' if vlog else 'Publish Vlog' }}</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+    // Auto-resize textareas
+    document.querySelectorAll('.form-textarea').forEach(textarea => {
+        function autoResize() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        }
+        textarea.addEventListener('input', autoResize);
+        if (textarea.value) autoResize.call(textarea);
+    });
+})();
+</script>
+{% endblock %}

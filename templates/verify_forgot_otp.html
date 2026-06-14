@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP - VlogVerse{% endblock %}
+
+{% block extra_css %}
+<style>
+  .otp-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .otp-container {
+    width: 100%;
+    max-width: 440px;
+  }
+  .otp-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+  .otp-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .auth-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.5rem; color: #fff;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.3);
+  }
+  .auth-header h2 {
+    font-size: 1.75rem; font-weight: 700; color: #f1f5f9;
+    margin-bottom: 0.5rem; font-family: 'Space Grotesk', sans-serif;
+  }
+  .auth-header p {
+    color: #94a3b8; font-size: 0.95rem; line-height: 1.6;
+  }
+  .error-message {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #ef4444;
+    padding: 0.6rem 1rem; border-radius: 10px;
+    font-size: 0.85rem; text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .success-message {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: #22c55e;
+    padding: 0.6rem 1rem; border-radius: 10px;
+    font-size: 0.85rem; text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  /* OTP Input Group - same style as verification.html */
+  .otp-input-group {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    margin: 1.5rem 0 1rem;
+  }
+  .otp-input-group input {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.9rem 1rem;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    color: #f1f5f9;
+    outline: none;
+    transition: all 0.3s ease;
+    caret-color: #6366f1;
+    letter-spacing: 0.5em;
+  }
+  .otp-input-group input:focus {
+    border-color: #6366f1;
+    background: rgba(99,102,241,0.08);
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+  }
+  .auth-submit {
+    width: 100%;
+    padding: 0.95rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none; border-radius: 12px;
+    color: #fff; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.35);
+  }
+  .auth-submit:active {
+    transform: translateY(0);
+  }
+  .otp-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #64748b; font-size: 0.9rem;
+  }
+  .otp-footer a {
+    color: #6366f1; text-decoration: none; font-weight: 500;
+  }
+  .otp-footer a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 480px) {
+    .otp-card { padding: 2rem 1.25rem; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="otp-section">
+  <div class="otp-container">
+    <div class="otp-card">
+
+      <!-- Header -->
+      <div class="auth-header">
+        <div class="auth-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2>Verify OTP</h2>
+        <p>Enter the 6-digit code sent to your email.</p>
+      </div>
+
+      <!-- Error -->
+      {% if error %}
+      <div class="error-message">⚠ {{error}}</div>
+      {% endif %}
+
+      <!-- Success -->
+      {% if success %}
+      <div class="success-message">✅ Password reset successfully! Redirecting to login...</div>
+      {% endif %}
+
+      <!-- OTP Form -->
+      {% if not success %}
+      <form method="POST" action="/verify_forgot_otp">
+        <div class="otp-input-group">
+          <input
+            type="text"
+            name="user_otp"
+            maxlength="6"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="one-time-code"
+            autofocus
+          >
+        </div>
+
+        <button type="submit" class="auth-submit">
+          <span>Verify & Continue</span>
+          <i class="fas fa-check-circle"></i>
+        </button>
+      </form>
+      {% endif %}
+
+      <!-- Footer -->
+      <div class="otp-footer">
+        <p>Wrong email? <a href="/forget_password">Change it</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

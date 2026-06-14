@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Explore - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-compass"></i>
+                    Explore
+                </h1>
+                <p class="page-subtitle">Discover amazing vlogs from creators worldwide</p>
+            </div>
+            {% if session.user %}
+            <div class="page-header-actions">
+                <a href="/vlog/new" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    <span>Create Vlog</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if vlogs %}
+        <div class="vlogs-grid">
+            {% for vlog in vlogs %}
+            <article class="vlog-card">
+                <a href="/vlog/{{ vlog.id }}" class="vlog-card-link">
+                    <div class="vlog-card-cover">
+                        {% if vlog.cover_image_url %}
+                        <img src="{{ vlog.cover_image_url }}" alt="{{ vlog.title }}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.vlog-card-cover-placeholder').style.display='flex';">
+                        <div class="vlog-card-cover-placeholder" style="display:none;">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% else %}
+                        <div class="vlog-card-cover-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                        <div class="vlog-card-overlay">
+                            <span class="vlog-card-read"><i class="fas fa-book-open"></i> Read More</span>
+                        </div>
+                    </div>
+                    <div class="vlog-card-body">
+                        <div class="vlog-card-meta">
+                            <span class="vlog-card-author">
+                                <i class="fas fa-user-circle"></i>
+                                {{ vlog.author.First_Name }} {{ vlog.author.Last_Name or '' }}
+                            </span>
+                            <span class="vlog-card-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ vlog.created_at.strftime('%b %d, %Y') }}
+                            </span>
+                        </div>
+                        <h2 class="vlog-card-title">{{ vlog.title }}</h2>
+                        <p class="vlog-card-description">{{ vlog.description[:150] }}{% if vlog.description|length > 150 %}...{% endif %}</p>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="page-empty">
+            <div class="page-empty-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <h3>No Vlogs Yet</h3>
+            <p>Be the first creator to share your story with the world!</p>
+            {% if session.user %}
+            <a href="/vlog/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                <span>Create Your First Vlog</span>
+            </a>
+            {% else %}
+            <a href="/signup" class="btn btn-primary">
+                <i class="fas fa-rocket"></i>
+                <span>Join VlogVerse</span>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

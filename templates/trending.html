@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Trending - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-fire"></i>
+                    Trending
+                </h1>
+                <p class="page-subtitle">Hot vlogs that everyone is talking about right now</p>
+            </div>
+        </div>
+
+        {% if vlogs %}
+        <div class="trending-list">
+            {% for vlog in vlogs %}
+            <article class="trending-card">
+                <div class="trending-rank">#{{ loop.index }}</div>
+                <a href="/vlog/{{ vlog.id }}" class="trending-card-link">
+                    <div class="trending-cover">
+                        {% if vlog.cover_image_url %}
+                        <img src="{{ vlog.cover_image_url }}" alt="{{ vlog.title }}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.trending-cover-placeholder').style.display='flex';">
+                        <div class="trending-cover-placeholder" style="display:none;">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% else %}
+                        <div class="trending-cover-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="trending-info">
+                        <div class="trending-meta">
+                            <span class="trending-author">
+                                <i class="fas fa-user-circle"></i>
+                                {{ vlog.author.First_Name }} {{ vlog.author.Last_Name or '' }}
+                            </span>
+                            <span class="trending-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ vlog.created_at.strftime('%b %d, %Y') }}
+                            </span>
+                        </div>
+                        <h2 class="trending-title">{{ vlog.title }}</h2>
+                        <p class="trending-desc">{{ vlog.description[:120] }}{% if vlog.description|length > 120 %}...{% endif %}</p>
+                    </div>
+                    <div class="trending-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="page-empty">
+            <div class="page-empty-icon">
+                <i class="fas fa-fire"></i>
+            </div>
+            <h3>No Trending Content Yet</h3>
+            <p>Once creators start posting, trending vlogs will appear here!</p>
+            <a href="/explore" class="btn btn-primary">
+                <i class="fas fa-compass"></i>
+                <span>Explore Vlogs</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

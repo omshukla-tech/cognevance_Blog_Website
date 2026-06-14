@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-header-left">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-compass"></i>
+                    Explore Vlogs
+                </h1>
+                <p class="dashboard-subtitle">Discover stories from creators around the world</p>
+            </div>
+            <div class="dashboard-header-actions">
+                <a href="/vlog/new" class="btn btn-primary dashboard-create-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Create Vlog</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="dashboard-search">
+            <form action="/dashboard" method="GET" class="search-form" id="searchForm">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" class="search-input" placeholder="Search vlogs by title, description, or content..." value="{{ query or '' }}" autocomplete="off">
+                    {% if query %}
+                    <a href="/dashboard" class="search-clear" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% endif %}
+                    <button type="submit" class="search-submit-btn">Search</button>
+                </div>
+            </form>
+        </div>
+
+        {% if query %}
+        <div class="search-results-info">
+            {% if vlogs %}
+            <p><i class="fas fa-search"></i> Found <strong>{{ vlogs|length }}</strong> result{{ 's' if vlogs|length != 1 else '' }} for "<strong>{{ query }}</strong>"</p>
+            {% else %}
+            <p><i class="fas fa-search"></i> No results found for "<strong>{{ query }}</strong>"</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if vlogs %}
+        <div class="vlogs-grid">
+            {% for vlog in vlogs %}
+            <article class="vlog-card" data-aos="fade-up">
+                <a href="/vlog/{{ vlog.id }}" class="vlog-card-link">
+                    <div class="vlog-card-cover">
+                        {% if vlog.cover_image_url %}
+                        <img src="{{ vlog.cover_image_url }}" alt="{{ vlog.title }}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.vlog-card-cover-placeholder').style.display='flex';">
+                        <div class="vlog-card-cover-placeholder" style="display:none;">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% else %}
+                        <div class="vlog-card-cover-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                        <div class="vlog-card-overlay">
+                            <span class="vlog-card-read"><i class="fas fa-book-open"></i> Read More</span>
+                        </div>
+                    </div>
+                    <div class="vlog-card-body">
+                        <div class="vlog-card-meta">
+                            <span class="vlog-card-author">
+                                <i class="fas fa-user-circle"></i>
+                                {{ vlog.author.First_Name }} {{ vlog.author.Last_Name or '' }}
+                            </span>
+                            <span class="vlog-card-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ vlog.created_at.strftime('%b %d, %Y') }}
+                            </span>
+                        </div>
+                        <h2 class="vlog-card-title">{{ vlog.title }}</h2>
+                        <p class="vlog-card-description">{{ vlog.description[:150] }}{% if vlog.description|length > 150 %}...{% endif %}</p>
+                    </div>
+                </a>
+                {% if vlog.author_id == user.serial_number %}
+                <div class="vlog-card-actions">
+                    <a href="/vlog/{{ vlog.id }}/edit" class="vlog-action-btn edit-btn" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="/vlog/{{ vlog.id }}/delete" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this vlog?');">
+                        <button type="submit" class="vlog-action-btn delete-btn" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+        {% elif not query %}
+        <div class="dashboard-empty">
+            <div class="dashboard-empty-icon">
+                <i class="fas fa-video"></i>
+            </div>
+            <h3>No Vlogs Yet</h3>
+            <p>Be the first to create a vlog and share your story with the world!</p>
+            <a href="/vlog/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                <span>Create Your First Vlog</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

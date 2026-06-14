@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Admin Panel
+                </h1>
+                <p class="page-subtitle">Manage messages, vlogs, and users</p>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="error-message" style="margin-bottom:20px;">⚠ {{ error }}</div>
+        {% endif %}
+
+        <!-- Tab Navigation -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="messages">
+                <i class="fas fa-inbox"></i>
+                Messages <span class="tab-badge">{{ messages|length }}</span>
+            </button>
+            <button class="admin-tab" data-tab="vlogs">
+                <i class="fas fa-video"></i>
+                All Vlogs <span class="tab-badge">{{ vlogs|length }}</span>
+            </button>
+            <button class="admin-tab" data-tab="users">
+                <i class="fas fa-users"></i>
+                Users <span class="tab-badge">{{ users|length }}</span>
+            </button>
+        </div>
+
+        <!-- ===== Messages Tab ===== -->
+        <div class="admin-tab-content active" id="tab-messages">
+            {% if messages %}
+            <div class="messages-list">
+                {% for msg in messages %}
+                <div class="message-card {% if not msg.email_sent %}message-email-failed{% endif %}">
+                    <div class="message-header">
+                        <div class="message-sender">
+                            <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <h3 class="message-name">{{ msg.name }}</h3>
+                                <a href="mailto:{{ msg.email }}" class="message-email">{{ msg.email }}</a>
+                            </div>
+                        </div>
+                        <div class="message-meta">
+                            {% if not msg.email_sent %}
+                            <span class="message-badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Email Failed</span>
+                            {% else %}
+                            <span class="message-badge badge-success"><i class="fas fa-check"></i> Emailed</span>
+                            {% endif %}
+                            <span class="message-date"><i class="fas fa-clock"></i> {{ msg.created_at.strftime('%b %d, %Y at %I:%M %p') }}</span>
+                        </div>
+                    </div>
+                    <div class="message-subject"><i class="fas fa-tag"></i> <span>{{ msg.subject }}</span></div>
+                    <div class="message-body"><p>{{ msg.message }}</p></div>
+                    <div class="message-actions">
+                        <a href="mailto:{{ msg.email }}?subject=Re: {{ msg.subject }}" class="btn btn-primary btn-sm"><i class="fas fa-reply"></i> Reply</a>
+                        <form action="/messages/{{ msg.id }}/delete" method="POST" class="delete-form" onsubmit="return confirm('Delete this message?');">
+                            <button type="submit" class="btn btn-ghost btn-sm btn-danger-outline"><i class="fas fa-trash-alt"></i> Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="page-empty">
+                <div class="page-empty-icon"><i class="fas fa-inbox"></i></div>
+                <h3>No Messages</h3>
+                <p>No contact form submissions yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== Vlogs Tab ===== -->
+        <div class="admin-tab-content" id="tab-vlogs">
+            {% if vlogs %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vlog in vlogs %}
+                        <tr>
+                            <td><span class="admin-id">#{{ vlog.id }}</span></td>
+                            <td>
+                                <div class="admin-vlog-title">{{ vlog.title }}</div>
+                                <div class="admin-vlog-desc">{{ vlog.description[:80] }}{% if vlog.description|length > 80 %}...{% endif %}</div>
+                            </td>
+                            <td>
+                                <div class="admin-cell-user">
+                                    <i class="fas fa-user-circle"></i>
+                                    {{ vlog.author.First_Name }} {{ vlog.author.Last_Name or '' }}
+                                </div>
+                            </td>
+                            <td><span class="admin-date">{{ vlog.created_at.strftime('%b %d, %Y') }}</span></td>
+                            <td>
+                                <div class="admin-actions">
+                                    <a href="/vlog/{{ vlog.id }}/edit" class="admin-btn admin-btn-edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="/vlog/{{ vlog.id }}" class="admin-btn admin-btn-view" title="View"><i class="fas fa-eye"></i></a>
+                                    <form action="/admin/vlog/{{ vlog.id }}/delete" method="POST" class="delete-form" onsubmit="return confirm('Delete vlog #{{ vlog.id }}?');">
+                                        <button type="submit" class="admin-btn admin-btn-delete" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="page-empty">
+                <div class="page-empty-icon"><i class="fas fa-video"></i></div>
+                <h3>No Vlogs</h3>
+                <p>No vlogs have been created yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== Users Tab ===== -->
+        <div class="admin-tab-content" id="tab-users">
+            <div class="admin-users-header">
+                <h3><i class="fas fa-users"></i> All Users</h3>
+                <button class="btn btn-primary btn-sm" id="showAddUserBtn">
+                    <i class="fas fa-plus"></i> Add User
+                </button>
+            </div>
+
+            <!-- Add User Form -->
+            <div class="admin-add-user-form" id="addUserForm" style="display:none;">
+                <div class="admin-add-user-card">
+                    <h4><i class="fas fa-user-plus"></i> Add New User</h4>
+                    <form method="POST" action="/admin/user/add">
+                        <div class="admin-form-row">
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <input type="text" name="first_name" class="form-input" required>
+                                    <label class="form-label">First Name</label>
+                                    <div class="input-highlight"></div>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-wrapper">
+                                    <input type="text" name="last_name" class="form-input">
+                                    <label class="form-label">Last Name</label>
+                                    <div class="input-highlight"></div>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="email" name="email" class="form-input" required>
+                                <label class="form-label">Email</label>
+                                <div class="input-highlight"></div>
+                                <i class="fas fa-envelope input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="password" class="form-input" required>
+                                <label class="form-label">Password</label>
+                                <div class="input-highlight"></div>
+                                <i class="fas fa-lock input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="admin-form-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Create User</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="cancelAddUser">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if users %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Vlogs</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr class="{% if u.is_admin %}admin-row-admin{% endif %}">
+                            <td><span class="admin-id">#{{ u.serial_number }}</span></td>
+                            <td>
+                                <div class="admin-cell-user">
+                                    <i class="fas fa-user-circle"></i>
+                                    {{ u.First_Name }} {{ u.Last_Name or '' }}
+                                </div>
+                            </td>
+                            <td><span class="admin-email">{{ u.Email }}</span></td>
+                            <td>
+                                {% if u.is_admin %}
+                                <span class="admin-role-badge admin-role-admin"><i class="fas fa-crown"></i> Admin</span>
+                                {% else %}
+                                <span class="admin-role-badge admin-role-user"><i class="fas fa-user"></i> User</span>
+                                {% endif %}
+                            </td>
+                            <td><span class="admin-count">{{ u.vlogs|length }}</span></td>
+                            <td><span class="admin-date">N/A</span></td>
+                            <td>
+                                {% if not u.is_admin %}
+                                <form action="/admin/user/{{ u.serial_number }}/delete" method="POST" class="delete-form" onsubmit="return confirm('Delete user {{ u.First_Name }} {{ u.Last_Name or '' }} and all their vlogs?');">
+                                    <button type="submit" class="admin-btn admin-btn-delete" title="Delete User"><i class="fas fa-user-slash"></i></button>
+                                </form>
+                                {% else %}
+                                <span class="admin-protected"><i class="fas fa-lock"></i></span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+
+    // Tab switching
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        });
+    });
+
+    // Toggle add user form
+    const showBtn = document.getElementById('showAddUserBtn');
+    const addForm = document.getElementById('addUserForm');
+    const cancelBtn = document.getElementById('cancelAddUser');
+
+    if (showBtn && addForm) {
+        showBtn.addEventListener('click', function() {
+            addForm.style.display = 'block';
+            showBtn.style.display = 'none';
+        });
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                addForm.style.display = 'none';
+                showBtn.style.display = 'inline-flex';
+            });
+        }
+    }
+
+    // Auto-hide URL parameters for error
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('error')) {
+        const tabBtns = document.querySelectorAll('.admin-tab');
+        if (tabBtns.length > 2) {
+            tabBtns[2].click();
+        }
+    }
+})();
+</script>
+{% endblock %}

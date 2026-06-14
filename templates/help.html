@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Help Center - VlogVerse{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container page-content-container">
+        <div class="page-content-card">
+            <div class="page-content-header">
+                <div class="page-content-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h1>Help Center</h1>
+                <p>Find answers to common questions and learn how to make the most of VlogVerse</p>
+            </div>
+
+            <div class="help-search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" class="help-search-input" id="helpSearch" placeholder="Search for help topics..." autocomplete="off">
+            </div>
+
+            <div class="page-content-body" id="helpContent">
+                <div class="help-category">
+                    <h2><i class="fas fa-user-plus"></i> Getting Started</h2>
+                    
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>How do I create an account?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Click the "Sign Up" button in the top-right corner. Fill in your name, email address, and create a password. Once submitted, you'll be automatically logged in and redirected to your dashboard.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>How do I create a vlog?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>After logging in, navigate to your Dashboard and click the "Create Vlog" button. Fill in the title, description, content (HTML supported), and optionally add a cover image URL. Click "Publish Vlog" to share it with everyone.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>Can I edit or delete my vlogs?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Yes! You can edit or delete any vlog that you created. Look for the edit (pencil) and delete (trash) icons on your vlog cards in the dashboard, or use the buttons on the individual vlog page.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-category">
+                    <h2><i class="fas fa-search"></i> Browsing & Discovery</h2>
+                    
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>How do I search for vlogs?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Use the search bar on the Dashboard page. You can search by title, description, or content. Results are prioritized by title matches first, then description, then content.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>What is the Explore page?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>The Explore page showcases all vlogs from newest to oldest. It's a great way to discover new content and creators. You don't need to be logged in to browse vlogs.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>How does Trending work?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Trending shows the most popular and recent vlogs. Check back often to see what's hot in the VlogVerse community!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-category">
+                    <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                    
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>How do I log out?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Click the "Logout" button next to your name in the navigation bar. You'll be redirected to the login page.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>I forgot my password. What should I do?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>On the login page, click the "Forgot Password?" link. Follow the instructions to reset your password. If you need further assistance, please <a href="/contact">contact our support team</a>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-category">
+                    <h2><i class="fas fa-lock"></i> Privacy & Security</h2>
+                    
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>Who can see my vlogs?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>All published vlogs are visible to everyone on the platform. They appear on the Explore page, Trending page, and Dashboard. Anyone can read your vlogs without needing an account.</p>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <button class="help-question">
+                            <span>Is my personal information safe?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="help-answer">
+                            <p>Yes, we take data security seriously. Your password is encrypted, and we follow industry best practices to protect your information. See our <a href="/privacy">Privacy Policy</a> for more details.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-still-stuck">
+                    <i class="fas fa-headset"></i>
+                    <h3>Still stuck?</h3>
+                    <p>Can't find what you're looking for? Our support team is here to help.</p>
+                    <a href="/contact" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+
+    // FAQ Accordion
+    document.querySelectorAll('.help-question').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const icon = this.querySelector('i');
+            const isOpen = this.classList.contains('active');
+
+            // Close all
+            document.querySelectorAll('.help-question').forEach(q => {
+                q.classList.remove('active');
+                q.nextElementSibling.style.maxHeight = null;
+                q.querySelector('i').style.transform = 'rotate(0deg)';
+            });
+
+            // Open this one if it was closed
+            if (!isOpen) {
+                this.classList.add('active');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+
+    // Help Search
+    const searchInput = document.getElementById('helpSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.help-item');
+            const categories = document.querySelectorAll('.help-category');
+
+            if (!query) {
+                items.forEach(item => item.style.display = '');
+                categories.forEach(cat => cat.style.display = '');
+                return;
+            }
+
+            categories.forEach(category => {
+                let hasVisible = false;
+                const catItems = category.querySelectorAll('.help-item');
+                catItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        item.style.display = '';
+                        hasVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                category.style.display = hasVisible ? '' : 'none';
+            });
+        });
+    }
+})();
+</script>
+{% endblock %}
