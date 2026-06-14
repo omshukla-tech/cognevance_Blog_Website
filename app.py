@@ -7,7 +7,9 @@ import os
 import random
 load_dotenv()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+import os
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.secret_key = "mysecretkey"
 
 # Flask-Mail Configuration (Elastic Email via SMTP)
