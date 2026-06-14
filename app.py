@@ -285,7 +285,7 @@ def signup():
                     error="Email already registered"
                 )
             if Password == Conform_Password:
-                is_admin_user = (Email == 'admin@gmail.com')
+                is_admin_user = (Email == 'sjosajsis@gmail.com')
                 session['First_Name'] = First_Name
                 session['Last_Name'] = Last_Name
                 session['Email'] = Email
