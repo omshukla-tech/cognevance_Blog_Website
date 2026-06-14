@@ -48,28 +48,31 @@ VlogVerse/
 ├── static/
 │   ├── css/
 │   │   └── style.css            # All custom styles (glassmorphism, animations, responsive)
-│   └── js/
-│       └── script.js            # Frontend interactivity (particles, counters, mobile menu, etc.)
+│   ├── js/
+│   │   └── script.js            # Frontend interactivity (particles, counters, mobile menu, etc.)
+│   └── videos/
+│       └── intro.mp4            # Intro/background video for landing page hero section
 └── templates/
-    ├── base.html                # Base layout (nav, particles, footer, scripts)
-    ├── index.html               # Landing / hero page
-    ├── login.html               # Login page
-    ├── signup.html              # Registration page (with password strength meter)
-    ├── verification.html        # OTP verification step (signup)
-    ├── forgot_password.html     # Email input to request password reset
-    ├── verify_forgot_otp.html   # OTP verification step (password reset)
-    ├── reset_password.html      # Set new password
-    ├── dashboard.html           # User dashboard (search + vlog cards)
-    ├── vlog_form.html           # Create / edit vlog form
-    ├── vlog_view.html           # Single vlog detail view
-    ├── explore.html             # Browse all vlogs
-    ├── trending.html            # Ranked vlog list
-    ├── admin.html               # Admin panel (messages, vlogs, users tabs)
-    ├── messages.html            # Standalone messages list page
-    ├── contact.html             # Contact form page
-    ├── help.html                # FAQ accordion with search
-    ├── privacy.html             # Privacy policy
-    └── terms.html               # Terms of service
+├── base.html                # Base layout (nav, particles, footer, scripts)
+├── index.html               # Landing / hero page
+├── login.html               # Login page
+├── signup.html              # Registration page (with password strength meter)
+├── verification.html        # OTP verification step (signup)
+├── forgot_password.html     # Email input to request password reset
+├── verify_forgot_otp.html   # OTP verification step (password reset)
+├── reset_password.html      # Set new password
+├── dashboard.html           # User dashboard (search + vlog cards)
+├── vlog_form.html           # Create / edit vlog form
+├── vlog_view.html           # Single vlog detail view
+├── explore.html             # Browse all vlogs
+├── trending.html            # Ranked vlog list
+├── admin.html               # Admin panel (messages, vlogs, users tabs)
+├── messages.html            # Standalone messages list page
+├── contact.html             # Contact form page
+├── help.html                # FAQ accordion with search
+├── privacy.html             # Privacy policy
+└── terms.html               # Terms of service
+
 ```
 
 ---
