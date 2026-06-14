@@ -8,7 +8,12 @@ import random
 load_dotenv()
 app = Flask(__name__)
 import os
+from sqlalchemy import create_engine
 
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.secret_key = "mysecretkey"
 
